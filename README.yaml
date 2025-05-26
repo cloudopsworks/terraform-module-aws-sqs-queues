@@ -1,4 +1,4 @@
-name: Terraform Transit Gateway Module
+name: Terraform AWS SQS Queue Management Module
 #logo: logo/logo.jpg
 
 license: "APACHE2"
@@ -8,23 +8,113 @@ copyrights:
     url: "https://cloudops.works"
     year: "2024"
 
-github_repo: cloudopsworks/terraform-module-aws-vpc-setup
+github_repo: cloudopsworks/terraform-module-aws-sqs-queues
 
 description: |-
-  VPC Module for setting up transit gateway with ResourceAccessMananger support.
+  AWS SQS Queue Management Module for Terraform that allows creation and management of SQS queues with comprehensive configuration options. 
+  Supports FIFO queues, encryption, message attributes, dead-letter queues, and IAM policies.
+  Enables easy setup of multiple queues with different configurations using a single module.
 
 # Introduction to the project
-#introduction: |-
-#  This is an introduction.
+introduction: |-
+  This Terraform module simplifies the creation and management of AWS SQS queues. It provides:
+  - Support for both standard and FIFO queues
+  - Configurable encryption using AWS SSE or KMS
+  - Dead-letter queue configuration
+  - IAM policy management
+  - Redrive policies for message handling
+  - Flexible queue naming with prefix support
+  - Comprehensive queue attribute configuration
 
 # How to use this project
-#usage: |-
+usage: |-
+  The module accepts a map of queue configurations through the `configs` variable. Each queue configuration can include:
+  - Queue name or name prefix
+  - FIFO settings
+  - Message retention and visibility timeout
+  - Encryption settings
+  - IAM policies
+  - Redrive policies
+  
+  Example configuration structure:
+  ```hcl
+  configs = {
+    queue1 = {
+      name_prefix = "myapp"
+      fifo = {
+        enabled = true
+        throughput_limit = "perQueue"
+      }
+      encryption = {
+        sse_enabled = true
+      }
+    }
+  }
+  ```
 
 # Example usage
-#examples: |-
+examples: |-
+  Basic terragrunt configuration:
+  ```hcl
+  include "root" {
+    path = find_in_parent_folders()
+  }
+
+  terraform {
+    source = "git::https://github.com/cloudopsworks/terraform-module-aws-sqs-queues.git?ref=v1.0.0"
+  }
+
+  inputs = {
+    configs = {
+      dlq = {
+        name_prefix = "deadletter"
+        message_retention = 1209600
+      }
+      main = {
+        name_prefix = "mainqueue"
+        policies = {
+          redrive = {
+            deadLetterTargetArn = dependency.dlq.outputs.sqs_queues["dlq"].arn
+            maxReceiveCount = 3
+          }
+        }
+      }
+    }
+  }
+  ```
 
 # How to get started quickly
-#quickstart: |-
+quickstart: |-
+  1. Add the module to your terragrunt.hcl:
+     ```hcl
+     terraform {
+       source = "git::https://github.com/cloudopsworks/terraform-module-aws-sqs-queues.git?ref=v1.0.0"
+     }
+     ```
+  
+  2. Configure basic queue settings:
+     ```hcl
+     inputs = {
+       configs = {
+         myqueue = {
+           name_prefix = "myapp"
+           message_retention = 345600
+           visibility_timeout = 30
+         }
+       }
+     }
+     ```
+  
+  3. Apply the configuration:
+     ```bash
+     terragrunt init
+     terragrunt plan
+     terragrunt apply
+     ```
+  
+  4. Access queue details through outputs:
+     - ARN: outputs.sqs_queues["myqueue"].arn
+     - URL: outputs.sqs_queues["myqueue"].url
 
 include:
   - "docs/targets.md"
