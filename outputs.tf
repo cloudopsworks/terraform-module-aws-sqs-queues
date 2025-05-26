@@ -15,3 +15,15 @@ output "sqs_queues" {
     }
   }
 }
+
+output "sqs_queues_kms_key_id" {
+  value = try(var.configs.encryption.enabled, false) ? aws_kms_key.this[0].id : null
+}
+
+output "sqs_queues_kms_key_arn" {
+  value = try(var.configs.encryption.enabled, false) ? aws_kms_key.this[0].arn : null
+}
+
+output "sqs_queues_kms_key_alias" {
+  value = try(var.configs.encryption.enabled, false) ? aws_kms_alias.this[0].name : null
+}
