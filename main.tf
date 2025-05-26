@@ -19,7 +19,7 @@ resource "aws_sqs_queue" "this" {
   delay_seconds                     = try(each.value.delay_seconds, null)
   receive_wait_time_seconds         = try(each.value.receive_wait_time, null)
   sqs_managed_sse_enabled           = try(each.value.encryption.sse_enabled, null)
-  kms_master_key_id                 = try(each.value.encryption.kms_key_id, null)
+  kms_master_key_id                 = try(var.configs.encryption.enabled, false) ? aws_kms_key.this[0].id : try(each.value.encryption.kms_key_id, null)
   kms_data_key_reuse_period_seconds = try(each.value.encryption.reuse_period_seconds, null)
   tags                              = local.all_tags
 }
