@@ -8,11 +8,11 @@
 #
 
 resource "aws_sqs_queue" "this" {
-  for_each                          = var.configs
+  for_each                          = try(var.configs.queues, {})
   name                              = try(each.value.name, "") != "" ? each.value.name : format("%s-%s-queue", try(each.value.name_prefix, each.key), local.system_name)
   fifo_queue                        = try(each.value.fifo.enabled, null)
-  max_message_size                  = try(each.value.max_message_size, null)
   fifo_throughput_limit             = try(each.value.fifo.throughput_limit, null)
+  max_message_size                  = try(each.value.max_message_size, null)
   content_based_deduplication       = try(each.value.deduplication, null)
   visibility_timeout_seconds        = try(each.value.visibility_timeout, null)
   message_retention_seconds         = try(each.value.message_retention, null)

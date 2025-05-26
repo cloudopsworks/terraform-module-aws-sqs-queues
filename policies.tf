@@ -9,7 +9,7 @@
 
 data "aws_iam_policy_document" "sqs_policy" {
   for_each = {
-    for key, config in var.configs : key => config
+    for key, config in try(var.configs.queues, {}) : key => config
     if length(try(config.policies.sqs, {})) > 0
   }
   statement {
@@ -39,7 +39,7 @@ data "aws_iam_policy_document" "sqs_policy" {
 
 resource "aws_sqs_queue_policy" "this" {
   for_each = {
-    for key, config in var.configs : key => config
+    for key, config in try(var.configs.queues, {}) : key => config
     if length(try(config.policies.sqs, {})) > 0
   }
   queue_url = aws_sqs_queue.this[each.key].id
@@ -48,7 +48,7 @@ resource "aws_sqs_queue_policy" "this" {
 
 resource "aws_sqs_queue_redrive_allow_policy" "this" {
   for_each = {
-    for key, config in var.configs : key => config
+    for key, config in try(var.configs.queues, {}) : key => config
     if length(try(config.policies.redrive_allow, {})) > 0
   }
   queue_url            = aws_sqs_queue.this[each.key].id
@@ -57,7 +57,7 @@ resource "aws_sqs_queue_redrive_allow_policy" "this" {
 
 resource "aws_sqs_queue_redrive_policy" "this" {
   for_each = {
-    for key, config in var.configs : key => config
+    for key, config in try(var.configs.queues, {}) : key => config
     if length(try(config.policies.redrive, {})) > 0
   }
   queue_url      = aws_sqs_queue.this[each.key].id
