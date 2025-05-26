@@ -10,8 +10,9 @@
 output "sqs_queues" {
   value = {
     for k, v in aws_sqs_queue.this : k => {
-      arn = v.arn
-      url = v.id
+      name = v.name
+      arn  = v.arn
+      url  = v.id
     }
   }
 }
