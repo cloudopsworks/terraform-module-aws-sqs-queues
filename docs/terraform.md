@@ -8,7 +8,7 @@
 
 | Name | Version |
 |------|---------|
-| <a name="provider_aws"></a> [aws](#provider\_aws) | 5.98.0 |
+| <a name="provider_aws"></a> [aws](#provider\_aws) | n/a |
 
 ## Modules
 
@@ -44,3 +44,6 @@
 | Name | Description |
 |------|-------------|
 | <a name="output_sqs_queues"></a> [sqs\_queues](#output\_sqs\_queues) | n/a |
+| <a name="output_sqs_queues_kms_key_alias"></a> [sqs\_queues\_kms\_key\_alias](#output\_sqs\_queues\_kms\_key\_alias) | n/a |
+| <a name="output_sqs_queues_kms_key_arn"></a> [sqs\_queues\_kms\_key\_arn](#output\_sqs\_queues\_kms\_key\_arn) | n/a |
+| <a name="output_sqs_queues_kms_key_id"></a> [sqs\_queues\_kms\_key\_id](#output\_sqs\_queues\_kms\_key\_id) | n/a |
