@@ -9,32 +9,32 @@
 
 # Configuration for SQS queues, Yaml format
 # configs:
-#   encryption:                           # KMS encryption configuration
-#     enabled: bool                       # Enable KMS encryption
-#     description: string                 # KMS key description
-#     deletion_window_in_days: number     # KMS key deletion window
-#     enable_key_rotation: bool           # Enable KMS key rotation
-#     is_enabled: bool                    # Is KMS key enabled
-#     alias: string                       # KMS key alias
-#   queues:                              # Map of queue configurations
+#   encryption:                           # (optional) KMS encryption configuration
+#     enabled: true | false               # (optional) Enable KMS encryption, defaults to false
+#     description: string                 # (optional) KMS key description
+#     deletion_window_in_days: number     # (optional) KMS key deletion window, defaults to 7 days
+#     enable_key_rotation: true | false   # (optional) Enable KMS key rotation, defaults to true
+#     is_enabled: bool                    # (optional) Is KMS key enabled, defaults to true
+#     alias: string                       # (optional) KMS key alias, defaults to "alias/(system_name)-sqs-queue"
+#   queues:                       # Map of queue configurations
 #     [queue_name]:
-#       name: string                      # Queue name (optional)
+#       name: string                     # Queue name (optional)
 #       name_prefix: string              # Queue name prefix if name not provided
 #       fifo:
-#         enabled: bool                   # Enable FIFO queue
-#         throughput_limit: string        # FIFO throughput limit
-#       max_message_size: number         # Maximum message size
-#       deduplication: bool              # Content-based deduplication
-#       visibility_timeout: number       # Visibility timeout in seconds
-#       message_retention: number        # Message retention period in seconds
-#       delay_seconds: number            # Message delay in seconds
-#       receive_wait_time: number        # Long polling wait time
-#       encryption:
-#         sse_enabled: bool              # Enable server-side encryption ignored if KMS is enabled in configs.encryption
-#         kms_key_id: string            # KMS key ID for encryption
-#         reuse_period_seconds: number   # KMS data key reuse period
-#       policies:
-#         sqs:                          # SQS queue policy
+#         enabled: true | false          # (optional) Enable FIFO queue, defaults to false
+#         throughput_limit: string       # (optional) FIFO throughput limit, can be "per_message_group_id" or "per_queue"
+#       max_message_size: number         # (optional) Maximum message size, defaults to 262144 bytes (256 KB)
+#       deduplication: true | false      # (optional) Content-based deduplication, defaults to false
+#       visibility_timeout: number       # (optional) Visibility timeout in seconds
+#       message_retention: number        # (optional) Message retention period in seconds
+#       delay_seconds: number            # (optional) Message delay in seconds
+#       receive_wait_time: number        # (optional) Long polling wait time
+#       encryption:              # (optional) Encryption configuration for the queue
+#         sse_enabled: true | false     # (optional) Enable server-side encryption ignored if KMS is enabled in configs.encryption
+#         kms_key_id: string            # (optional) KMS key ID for encryption, use to override configs.encryption
+#         reuse_period_seconds: number  # (optional) KMS data key reuse period
+#       policies:                # (optional) List of policies for the queue
+#         sqs:                        # (optional) SQS queue policy
 #           sid: string                 # Statement ID
 #           actions: list(string)       # IAM actions
 #           effect: string              # Allow/Deny
