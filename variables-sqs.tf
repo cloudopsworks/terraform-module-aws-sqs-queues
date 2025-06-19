@@ -30,7 +30,8 @@
 #       delay_seconds: number            # (optional) Message delay in seconds
 #       receive_wait_time: number        # (optional) Long polling wait time
 #       encryption:              # (optional) Encryption configuration for the queue
-#         sse_enabled: true | false     # (optional) Enable server-side encryption ignored if KMS is enabled in configs.encryption
+#         override: true | false        # (optional) Override encryption settings, when true, it ignores configs.encryption
+#         sse_enabled: true | false     # (optional) Enable server-side encryption ignored if KMS is enabled in configs.encryption or kms_key_id is provided
 #         kms_key_id: string            # (optional) KMS key ID for encryption, use to override configs.encryption
 #         reuse_period_seconds: number  # (optional) KMS data key reuse period
 #       policies:                # (optional) List of policies for the queue
