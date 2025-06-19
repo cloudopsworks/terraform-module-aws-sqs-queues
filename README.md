@@ -76,10 +76,10 @@ configs:
   encryption:
     enabled: true                    # Enable KMS encryption
     description: "KMS key desc"      # KMS key description
-    deletion_window_in_days: 7       # KMS key deletion window
-    enable_key_rotation: true        # Enable KMS key rotation
-    is_enabled: true                 # Is KMS key enabled
-    alias: "alias/my-key"           # KMS key alias
+    deletion_window_in_days: 7       # KMS key deletion window (default: 7)
+    enable_key_rotation: true        # Enable KMS key rotation (default: true)
+    is_enabled: true                 # Is KMS key enabled (default: true)
+    alias: "alias/my-key"           # KMS key alias (default: alias/(system_name)-sqs-queue)
 ```
 
 Queue configurations:
@@ -90,27 +90,28 @@ configs:
       name: "queue-name"             # Queue name (optional)
       name_prefix: "prefix"          # Queue name prefix if name not provided
       fifo:
-        enabled: true                # Enable FIFO queue
-        throughput_limit: "perQueue" # FIFO throughput limit
-      max_message_size: 262144       # Maximum message size
-      deduplication: true            # Content-based deduplication
+        enabled: true                # Enable FIFO queue (default: false)
+        throughput_limit: "perQueue" # FIFO throughput limit (perQueue or per_message_group_id)
+      max_message_size: 262144       # Maximum message size (default: 262144 bytes)
+      deduplication: true            # Content-based deduplication (default: false)
       visibility_timeout: 30         # Visibility timeout in seconds
       message_retention: 345600      # Message retention period in seconds
       delay_seconds: 0               # Message delay in seconds
       receive_wait_time: 0           # Long polling wait time
       encryption:
+        override: false              # Override global encryption settings
         sse_enabled: true           # Enable server-side encryption
         kms_key_id: "key-id"        # KMS key ID for encryption
         reuse_period_seconds: 300    # KMS data key reuse period
       policies:
-        sqs:
-          sid: "AllowS3"            # Statement ID
-          actions: ["sqs:*"]        # IAM actions
-          effect: "Allow"           # Allow/Deny
-          principals: []            # IAM principals
-          conditions: []           # Policy conditions
-        redrive_allow: {}          # Dead letter queue allow policy
-        redrive:                   # Dead letter queue policy
+        sqs:                       # SQS queue policy (optional)
+          sid: "AllowS3"          # Statement ID
+          actions: ["sqs:*"]      # IAM actions
+          effect: "Allow"         # Allow/Deny
+          principals: []          # IAM principals list
+          conditions: []          # Policy conditions list
+        redrive_allow: {}         # Dead letter queue allow policy (optional)
+        redrive:                  # Dead letter queue policy (optional)
           deadLetterTargetArn: "arn:aws:sqs:region:account:queue"
           maxReceiveCount: 3
 ```
