@@ -68,15 +68,54 @@ This Terraform module simplifies the creation and management of AWS SQS queues. 
 Instead pin to the release tag (e.g. `?ref=vX.Y.Z`) of one of our [latest releases](https://github.com/cloudopsworks/terraform-module-aws-sqs-queues/releases).
 
 
-The module accepts a map of queue configurations through the `configs` variable. Each queue configuration can include:
-- Queue name or name prefix
-- FIFO settings
-- Message retention and visibility timeout
-- Encryption settings
-- IAM policies
-- Redrive policies
+The module accepts a map of queue configurations through the `configs` variable. Configuration structure supports:
 
-Example configuration structure:
+Global encryption settings:
+```yaml
+configs:
+  encryption:
+    enabled: true                    # Enable KMS encryption
+    description: "KMS key desc"      # KMS key description
+    deletion_window_in_days: 7       # KMS key deletion window
+    enable_key_rotation: true        # Enable KMS key rotation
+    is_enabled: true                 # Is KMS key enabled
+    alias: "alias/my-key"           # KMS key alias
+```
+
+Queue configurations:
+```yaml
+configs:
+  queues:
+    my_queue:
+      name: "queue-name"             # Queue name (optional)
+      name_prefix: "prefix"          # Queue name prefix if name not provided
+      fifo:
+        enabled: true                # Enable FIFO queue
+        throughput_limit: "perQueue" # FIFO throughput limit
+      max_message_size: 262144       # Maximum message size
+      deduplication: true            # Content-based deduplication
+      visibility_timeout: 30         # Visibility timeout in seconds
+      message_retention: 345600      # Message retention period in seconds
+      delay_seconds: 0               # Message delay in seconds
+      receive_wait_time: 0           # Long polling wait time
+      encryption:
+        sse_enabled: true           # Enable server-side encryption
+        kms_key_id: "key-id"        # KMS key ID for encryption
+        reuse_period_seconds: 300    # KMS data key reuse period
+      policies:
+        sqs:
+          sid: "AllowS3"            # Statement ID
+          actions: ["sqs:*"]        # IAM actions
+          effect: "Allow"           # Allow/Deny
+          principals: []            # IAM principals
+          conditions: []           # Policy conditions
+        redrive_allow: {}          # Dead letter queue allow policy
+        redrive:                   # Dead letter queue policy
+          deadLetterTargetArn: "arn:aws:sqs:region:account:queue"
+          maxReceiveCount: 3
+```
+
+Example configuration:
 ```hcl
 configs = {
   queue1 = {
@@ -87,6 +126,14 @@ configs = {
     }
     encryption = {
       sse_enabled = true
+    }
+    message_retention = 345600
+    visibility_timeout = 30
+    policies = {
+      redrive = {
+        deadLetterTargetArn = "arn:aws:sqs:region:account:dlq"
+        maxReceiveCount = 3
+      }
     }
   }
 }
@@ -216,6 +263,9 @@ Available targets:
 | Name | Description |
 |------|-------------|
 | <a name="output_sqs_queues"></a> [sqs\_queues](#output\_sqs\_queues) | n/a |
+| <a name="output_sqs_queues_kms_key_alias"></a> [sqs\_queues\_kms\_key\_alias](#output\_sqs\_queues\_kms\_key\_alias) | n/a |
+| <a name="output_sqs_queues_kms_key_arn"></a> [sqs\_queues\_kms\_key\_arn](#output\_sqs\_queues\_kms\_key\_arn) | n/a |
+| <a name="output_sqs_queues_kms_key_id"></a> [sqs\_queues\_kms\_key\_id](#output\_sqs\_queues\_kms\_key\_id) | n/a |
 
 
 
