@@ -68,8 +68,16 @@ usage: |-
             sid: "AllowS3"          # Statement ID
             actions: ["sqs:*"]      # IAM actions
             effect: "Allow"         # Allow/Deny
-            principals: []          # IAM principals list
-            conditions: []          # Policy conditions list
+            principals:             # IAM principals list
+              - type: "AWS"
+                identifiers: 
+                  - "arn:aws:iam::123456789012:root"
+                  - "arn:aws:iam::123456789012:user/some-user"
+            conditions:             # (optional) Policy conditions list
+              - test: "StringEquals"
+                variable: "aws:SourceArn"
+                values:
+                  - "arn:aws:s3:::my-bucket"
           redrive_allow: {}         # Dead letter queue allow policy (optional)
           redrive:                  # Dead letter queue policy (optional)
             deadLetterTargetArn: "arn:aws:sqs:region:account:queue"
