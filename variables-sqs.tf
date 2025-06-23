@@ -39,8 +39,16 @@
 #           sid: string                 # Statement ID
 #           actions: list(string)       # IAM actions
 #           effect: string              # Allow/Deny
-#           principals: list(object)     # IAM principals
-#           conditions: list(object)     # Policy conditions
+#           principals:             # IAM principals list
+#             - type: "AWS"
+#               identifiers:
+#                 - "arn:aws:iam::123456789012:root"
+#                 - "arn:aws:iam::123456789012:user/some-user"
+#           conditions:             # (optional) Policy conditions list
+#             - test: "StringEquals"
+#               variable: "aws:SourceArn"
+#               values:
+#                 - "arn:aws:s3:::my-bucket"
 #         redrive_allow: map            # Dead letter queue allow policy
 #         redrive: map                  # Dead letter queue policy
 #

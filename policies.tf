@@ -13,11 +13,11 @@ data "aws_iam_policy_document" "sqs_policy" {
     if length(try(config.policies.sqs, {})) > 0
   }
   statement {
-    sid     = try(var.configs.policies.sqs.sid, null)
-    actions = var.configs.policies.sqs.actions
-    effect  = var.configs.policies.sqs.effect
+    sid     = try(each.value.policies.sqs.sid, null)
+    actions = each.value.policies.sqs.actions
+    effect  = each.value.policies.sqs.effect
     dynamic "principals" {
-      for_each = var.configs.policies.sqs.principals
+      for_each = each.value.policies.sqs.principals
       content {
         type        = principals.value.type
         identifiers = principals.value.identifiers
@@ -27,7 +27,7 @@ data "aws_iam_policy_document" "sqs_policy" {
       aws_sqs_queue.this[each.key].arn
     ]
     dynamic "condition" {
-      for_each = var.configs.policies.sqs.conditions
+      for_each = try(each.value.policies.sqs.conditions, [])
       content {
         variable = condition.value.variable
         test     = condition.value.test
