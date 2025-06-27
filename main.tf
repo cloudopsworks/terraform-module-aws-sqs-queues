@@ -7,12 +7,17 @@
 #     Distributed Under Apache v2.0 License
 #
 
+locals {
+  queue_names = { for key, config in try(var.configs.queues, {}) : key => try(config.name, "") != "" ? config.name : (try(config.fifo.enabled, false) ?
+    format("%s-%s.fifo", try(config.name_prefix, key), local.system_name_short) :
+    format("%s-%s", try(config.name_prefix, key), local.system_name_short)
+    )
+  }
+}
+
 resource "aws_sqs_queue" "this" {
-  for_each = try(var.configs.queues, {})
-  name = try(each.value.name, "") != "" ? each.value.name : (try(each.value.fifo.enabled, false) ?
-    format("%s-%s.fifo", try(each.value.name_prefix, each.key), local.system_name_short) :
-    format("%s-%s", try(each.value.name_prefix, each.key), local.system_name_short)
-  )
+  for_each                    = try(var.configs.queues, {})
+  name                        = local.queue_names[each.key]
   fifo_queue                  = try(each.value.fifo.enabled, null)
   fifo_throughput_limit       = try(each.value.fifo.throughput_limit, null)
   max_message_size            = try(each.value.max_message_size, null)
