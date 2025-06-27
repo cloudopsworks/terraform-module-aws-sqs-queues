@@ -24,7 +24,7 @@ data "aws_iam_policy_document" "sqs_policy" {
       }
     }
     resources = [
-      aws_sqs_queue.this[each.key].arn
+      "arn:aws:sqs:${data.aws_region.current.id}:${data.aws_caller_identity.current.account_id}:${local.queue_names[each.key]}"
     ]
     dynamic "condition" {
       for_each = try(each.value.policies.sqs.conditions, [])
