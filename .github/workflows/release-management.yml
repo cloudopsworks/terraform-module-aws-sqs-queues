@@ -31,10 +31,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout w/Blueprint
-        uses: cloudopsworks/blueprints/cd/checkout@v5.10
+        uses: cloudopsworks/blueprints/cd/checkout@v5.10.39
         id: co
         with:
-          blueprint_ref: 'v5.10'
+          blueprint_ref: 'v5.10.39'
 
       - name: Get Semver Info
         id: semver

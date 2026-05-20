@@ -1,11 +1,13 @@
 ##
-# (c) 2021-2025
+# (c) 2021-2026
 #     Cloud Ops Works LLC - https://cloudops.works/
 #     Find us on:
 #       GitHub: https://github.com/cloudopsworks
 #       WebSite: https://cloudops.works
 #     Distributed Under Apache v2.0 License
 #
+
+data "aws_caller_identity" "current" {}
 
 data "aws_iam_policy_document" "sqs_policy" {
   for_each = {
